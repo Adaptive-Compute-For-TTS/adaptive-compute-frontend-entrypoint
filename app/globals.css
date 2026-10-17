@@ -1,0 +1,229 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Adaptive TTS design tokens (source of truth: CLAUDE.md)
+   Canvas is a toned-down warm stone; the single accent is a neutral
+   "bone" reserved for primary CTAs, active indicators and key data
+   points. No saturated colour anywhere. Dark "night" bands give the
+   page its high-contrast rhythm.
+------------------------------------------------------------------ */
+@theme {
+  /* Color: light canvas (default) */
+  --color-paper: #e7e4dc;
+  --color-ink: #15181b;
+  --color-muted: #565c61;
+  --color-rule: #cdc8bd;
+  --color-paper-hover: #dfdbd2; /* row hover */
+  --color-sunk: #e0dcd3; /* expanded detail panels */
+  --color-accent: #d2cab9; /* neutral highlight: selection, top row */
+  --color-accent-strong: #8c826f; /* data marks that need contrast */
+
+  /* Color: dark bands (Proximal-style), alternated with the light canvas */
+  --color-night: #111214;
+  --color-night-raised: #17181b;
+  --color-night-ink: #e4e2dc;
+  --color-night-muted: #8a8d90;
+  --color-night-rule: #27292c;
+  --color-night-mark: #34312c; /* spoken-word marker on the dark band */
+  --color-night-accent: #c9bfab;
+
+  /* Structural grid: a neutral hairline that reads on both canvases */
+  --color-grid: rgb(128 122 112 / 0.2);
+  --color-grid-faint: rgb(128 122 112 / 0.11);
+
+  /* Type families (wired from next/font in app/layout.tsx) */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Type scale */
+  --text-hero: clamp(2.75rem, 1.35rem + 5.2vw, 6rem); /* 44 → 96px */
+  --text-hero--line-height: 0.98;
+  --text-hero--letter-spacing: -0.05em;
+
+  --text-h2: clamp(2.25rem, 1.75rem + 1.6vw, 3.25rem); /* 36 → 52px */
+  --text-h2--line-height: 1.04;
+  --text-h2--letter-spacing: -0.04em;
+
+  --text-lede: clamp(1.5rem, 1.2rem + 1vw, 2.25rem); /* 24 → 36px */
+  --text-lede--line-height: 1.18;
+  --text-lede--letter-spacing: -0.02em;
+
+  --text-body: 1.125rem; /* 18px */
+  --text-body--line-height: 1.55;
+
+  --text-meta: 0.75rem; /* 12px */
+  --text-meta--line-height: 1.4;
+  --text-meta--letter-spacing: 0.1em;
+
+  /* Layout */
+  --container-page: 82rem; /* 1312px */
+  --container-measure: 42rem; /* 672px prose measure */
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.35;
+      transform: scale(0.8);
+    }
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem; /* clears the sticky nav on anchor jumps */
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-feature-settings: "ss01";
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-ink);
+  }
+
+  .bg-night ::selection {
+    background: var(--color-night-mark);
+    color: var(--color-night-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility meta {
+  font-family: var(--font-mono);
+  font-size: var(--text-meta);
+  line-height: var(--text-meta--line-height);
+  letter-spacing: var(--text-meta--letter-spacing);
+  text-transform: uppercase;
+}
+
+@utility gutter {
+  padding-inline: 1.5rem; /* 24 */
+  @media (width >= 48rem) {
+    padding-inline: 3rem; /* 48 */
+  }
+  @media (width >= 80rem) {
+    padding-inline: 4rem; /* 64 */
+  }
+}
+
+@utility section-y {
+  padding-block: 6rem; /* 96 */
+  @media (width >= 64rem) {
+    padding-block: 8rem; /* 128 */
+  }
+}
+
+/* The box the structural rails sit in: same width as Container, with
+   half its gutter, so rails run between the page edge and the content. */
+@utility rail-box {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-page);
+  padding-inline: 0.75rem; /* 12 */
+  @media (width >= 48rem) {
+    padding-inline: 1.5rem; /* 24 */
+  }
+  @media (width >= 80rem) {
+    padding-inline: 2rem; /* 32 */
+  }
+}
+
+/* Registration mark where a rail crosses a section rule. Inherits color. */
+@utility crosshair {
+  background:
+    linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat;
+}
+
+/* Hairline grid, used as a texture layer behind the hero. */
+@utility texture-grid {
+  background-image:
+    linear-gradient(to right, var(--color-grid-faint) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid-faint) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+}
+
+/* Fine dot field for the dark bands. */
+@utility texture-dots {
+  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
+  background-size: 1.25rem 1.25rem;
+}
+
+/* Hover "glide": a fill that sweeps in from the left behind a row.
+   Pair with `group` on the same element for child transitions. */
+@utility row-glide {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-paper-hover);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 550ms var(--ease-out-soft);
+  }
+  &:hover::before,
+  &:focus-visible::before {
+    transform: scaleX(1);
+  }
+}
+
+/* The same sweep on the dark band. */
+@utility row-glide-night {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-night-raised);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 550ms var(--ease-out-soft);
+  }
+  &:hover::before,
+  &:focus-visible::before {
+    transform: scaleX(1);
+  }
+}
