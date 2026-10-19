@@ -137,6 +137,22 @@ export function ResearchDashboard({
           </span>
         </div>
 
+        <div className="mt-6 flex flex-col gap-4 border border-ink bg-sunk p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="meta text-muted">New · Real evaluation data</p>
+            <p className="mt-2 max-w-2xl text-sm leading-6">
+              Explore quality and latency across nine fixed NFE values using the
+              xvector_4090 experiment summary and 95% confidence intervals.
+            </p>
+          </div>
+          <Link
+            href="/research/dashboard/analysis"
+            className="shrink-0 border border-ink bg-ink px-4 py-2 text-sm text-paper transition-opacity hover:opacity-80"
+          >
+            View analysis
+          </Link>
+        </div>
+
         <dl className="mt-6 grid border-t border-l border-rule sm:grid-cols-2 xl:grid-cols-4">
           {summaryItems.map((item) => (
             <div
